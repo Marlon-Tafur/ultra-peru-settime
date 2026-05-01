@@ -276,6 +276,7 @@ export default function MySetTimePage() {
           </div>
 
           <div className="flex-1 overflow-y-auto overflow-x-auto">
+            <div style={{ maxWidth: 1400, margin: '0 auto' }}>
             <div className="flex" style={{ minWidth: 'max-content' }}>
               {/* Time labels */}
               <div
@@ -305,7 +306,7 @@ export default function MySetTimePage() {
               </div>
 
               {/* Desktop: 4 columns with only favorited artists */}
-              <div className="hidden md:flex" style={{ flex: 1, minWidth: 600 }}>
+              <div className="hidden md:flex" style={{ flex: 1, minWidth: 900 }}>
                 {STAGES.map((stage) => (
                   <StageColumn
                     key={stage.id}
@@ -333,6 +334,7 @@ export default function MySetTimePage() {
                   />
                 ))}
               </div>
+            </div>
             </div>
           </div>
         </>

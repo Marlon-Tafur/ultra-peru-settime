@@ -35,8 +35,8 @@ export default function ArtistBlock({
     onToggle()
   }
 
-  const showTime = height >= 40
-  const showGenre = height >= 68
+  const showTime = height >= 44
+  const showGenre = height >= 84
 
   return (
     <div
@@ -46,28 +46,28 @@ export default function ArtistBlock({
       style={{
         position: 'absolute',
         top,
-        left: 2,
-        right: 2,
-        height: height - 2,
+        left: 4,
+        right: 4,
+        height: height - 4,
         overflow: 'hidden',
-        borderRadius: 6,
+        borderRadius: 8,
         border: isLive
-          ? `1px solid ${stageColor}`
-          : `1px solid var(--border)`,
+          ? `1.5px solid ${stageColor}`
+          : isFavorite
+          ? `1px solid ${stageColor}55`
+          : '1px solid rgba(255,255,255,0.07)',
         boxShadow: isLive
-          ? `0 0 16px ${stageColor}70, inset 0 0 24px ${stageColor}12`
+          ? `0 0 18px ${stageColor}60`
           : hovered
-          ? `0 0 10px ${stageColor}40`
+          ? `0 0 12px ${stageColor}35`
           : 'none',
-        opacity: isPast ? 0.4 : 1,
-        filter: isPast ? 'grayscale(0.65)' : 'none',
-        transition: 'box-shadow 0.25s, opacity 0.3s, filter 0.3s',
+        opacity: isPast ? 0.38 : 1,
+        filter: isPast ? 'grayscale(0.7)' : 'none',
+        transition: 'box-shadow 0.25s, opacity 0.3s',
         cursor: 'default',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
       }}
     >
-      {/* Background image */}
+      {/* Background image — visible, not hidden */}
       <div
         style={{
           position: 'absolute',
@@ -75,151 +75,136 @@ export default function ArtistBlock({
           backgroundImage: `url(${artist.image})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center top',
-          opacity: hovered ? 0.35 : 0.18,
+          opacity: hovered ? 0.68 : 0.52,
           transition: 'opacity 0.2s',
         }}
       />
 
-      {/* Dark overlay */}
+      {/* Gradient overlay — only bottom, so image stays visible at top */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: isLive
-            ? `linear-gradient(135deg, ${stageColor}18 0%, rgba(10,10,15,0.7) 100%)`
-            : 'rgba(10,10,15,0.65)',
+          background:
+            'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.0) 100%)',
         }}
       />
 
-      {/* Left accent bar */}
+      {/* Heart button — top right */}
+      <button
+        onClick={handleToggle}
+        title={isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+        style={{
+          position: 'absolute',
+          top: 7,
+          right: 7,
+          width: 26,
+          height: 26,
+          borderRadius: '50%',
+          background: isFavorite ? `${stageColor}22` : 'rgba(0,0,0,0.45)',
+          border: isFavorite ? `1px solid ${stageColor}80` : '1px solid rgba(255,255,255,0.2)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transform: toggling ? 'scale(1.4)' : 'scale(1)',
+          transition: 'transform 0.15s, background 0.2s',
+          zIndex: 3,
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)',
+          flexShrink: 0,
+        }}
+      >
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill={isFavorite ? stageColor : 'none'}
+          stroke={isFavorite ? stageColor : 'rgba(255,255,255,0.85)'}
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+        </svg>
+      </button>
+
+      {/* Content — pinned to bottom */}
       <div
         style={{
           position: 'absolute',
-          left: 0,
-          top: 0,
           bottom: 0,
-          width: 3,
-          background: stageColor,
-          opacity: isLive ? 1 : 0.5,
-        }}
-      />
-
-      {/* Content */}
-      <div
-        style={{
-          position: 'relative',
-          zIndex: 1,
-          padding: '5px 8px 5px 10px',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          overflow: 'hidden',
+          left: 0,
+          right: 0,
+          padding: '6px 9px 7px 9px',
+          zIndex: 2,
         }}
       >
-        <div style={{ overflow: 'hidden' }}>
-          {/* Live badge */}
-          {isLive && (
-            <span
-              className="animate-pulse-glow"
-              style={{
-                display: 'inline-block',
-                fontSize: 8,
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                color: stageColor,
-                background: `${stageColor}20`,
-                border: `1px solid ${stageColor}80`,
-                borderRadius: 3,
-                padding: '1px 4px',
-                marginBottom: 2,
-              }}
-            >
-              LIVE
-            </span>
-          )}
+        {/* Live badge */}
+        {isLive && (
+          <span
+            className="animate-pulse-glow"
+            style={{
+              display: 'inline-block',
+              fontSize: 7,
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              color: stageColor,
+              background: `${stageColor}22`,
+              border: `1px solid ${stageColor}80`,
+              borderRadius: 3,
+              padding: '1px 5px',
+              marginBottom: 3,
+            }}
+          >
+            LIVE
+          </span>
+        )}
 
+        <p
+          style={{
+            color: '#ffffff',
+            fontWeight: 800,
+            fontSize: 11,
+            textTransform: 'uppercase',
+            lineHeight: 1.2,
+            letterSpacing: '0.04em',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: height < 64 ? 'nowrap' : 'normal',
+            margin: 0,
+          }}
+        >
+          {artist.name}
+        </p>
+
+        {showTime && (
           <p
             style={{
-              color: '#fff',
-              fontWeight: 800,
-              fontSize: 10,
-              textTransform: 'uppercase',
-              lineHeight: 1.2,
+              color: stageColor,
+              fontSize: 9,
+              fontWeight: 700,
+              marginTop: 2,
               letterSpacing: '0.03em',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: height < 50 ? 'nowrap' : 'normal',
             }}
           >
-            {artist.name}
+            {formatTime(artist.startTime)} – {formatTime(artist.endTime)}
           </p>
+        )}
 
-          {showTime && (
-            <p
-              style={{
-                color: stageColor,
-                fontSize: 9,
-                fontWeight: 700,
-                marginTop: 2,
-                letterSpacing: '0.02em',
-              }}
-            >
-              {formatTime(artist.startTime)} – {formatTime(artist.endTime)}
-            </p>
-          )}
-
-          {showGenre && artist.genre !== '—' && (
-            <p
-              style={{
-                color: 'var(--text-secondary)',
-                fontSize: 9,
-                marginTop: 1,
-              }}
-            >
-              {artist.genre}
-            </p>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          <button
-            onClick={handleToggle}
-            title={isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+        {showGenre && artist.genre !== '—' && (
+          <p
             style={{
-              fontSize: 12,
-              lineHeight: 1,
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              transform: toggling ? 'scale(1.5)' : 'scale(1)',
-              transition: 'transform 0.15s',
+              color: 'rgba(255,255,255,0.42)',
+              fontSize: 8,
+              marginTop: 1,
+              letterSpacing: '0.02em',
             }}
           >
-            {isFavorite ? '❤️' : '🤍'}
-          </button>
-
-          {artist.spotifyUrl && (
-            <a
-              href={artist.spotifyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              title="Abrir en Spotify"
-              style={{
-                fontSize: 10,
-                color: '#1DB954',
-                lineHeight: 1,
-                textDecoration: 'none',
-              }}
-            >
-              ♫
-            </a>
-          )}
-        </div>
+            {artist.genre}
+          </p>
+        )}
       </div>
     </div>
   )
