@@ -14,12 +14,11 @@ interface AgendaItem {
 
 interface Props {
   items: AgendaItem[]
-  now: Date
+  nowMs: number
 }
 
-export default function AgendaView({ items, now }: Props) {
-  const timelineY = getTimelineY(now)
-  const nowMs = now.getTime()
+export default function AgendaView({ items, nowMs }: Props) {
+  const timelineY = getTimelineY(new Date(nowMs))
 
   // Sort by effective start time
   const sorted = [...items].sort(

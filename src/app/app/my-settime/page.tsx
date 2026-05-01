@@ -1,14 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { ARTISTS, STAGES, getArtistsByStage, getStageColor } from '@/lib/artists-data'
 import {
   HOUR_LABELS,
   STAGE_HEADER_H,
   TOTAL_HEIGHT,
   getTimelineY,
-  minutesFromEventStart,
-  PX_PER_MIN,
 } from '@/lib/utils'
 import StageColumn from '@/components/StageColumn'
 import AgendaView from '@/components/AgendaView'
@@ -16,6 +14,7 @@ import ConflictModal, {
   FavoriteRecord,
   ConflictArtist,
 } from '@/components/ConflictModal'
+import ShareButton from '@/components/ShareButton'
 import { createClient } from '@/lib/supabase'
 
 type ViewMode = 'grid' | 'agenda'
@@ -75,6 +74,7 @@ export default function MySetTimePage() {
   const [loading, setLoading] = useState(true)
   const [conflicts, setConflicts] = useState<ConflictPair[]>([])
   const [openConflict, setOpenConflict] = useState<ConflictPair | null>(null)
+  const agendaRef = useRef<HTMLDivElement>(null)
 
   // Update time every minute
   useEffect(() => {
@@ -210,20 +210,24 @@ export default function MySetTimePage() {
           ))}
         </div>
 
-        {/* Conflicts badge */}
-        {conflicts.length > 0 && (
-          <button
-            onClick={() => setOpenConflict(conflicts[0])}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all"
-            style={{
-              background: 'rgba(255,140,0,0.15)',
-              border: '1px solid rgba(255,140,0,0.4)',
-              color: 'var(--orange)',
-            }}
-          >
-            ⚠️ {conflicts.length} conflicto{conflicts.length > 1 ? 's' : ''}
-          </button>
-        )}
+        <div className="flex items-center gap-2 ml-auto">
+          {/* Conflicts badge */}
+          {conflicts.length > 0 && (
+            <button
+              onClick={() => setOpenConflict(conflicts[0])}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all"
+              style={{
+                background: 'rgba(255,140,0,0.15)',
+                border: '1px solid rgba(255,140,0,0.4)',
+                color: 'var(--orange)',
+              }}
+            >
+              ⚠️ {conflicts.length} conflicto{conflicts.length > 1 ? 's' : ''}
+            </button>
+          )}
+          {/* Share button — solo si hay favoritos */}
+          {!isEmpty && <ShareButton agendaRef={agendaRef} />}
+        </div>
       </div>
 
       {/* ── Empty state ── */}
@@ -238,8 +242,8 @@ export default function MySetTimePage() {
 
       {/* ── Agenda view ── */}
       {!isEmpty && view === 'agenda' && (
-        <div className="flex-1 overflow-y-auto">
-          <AgendaView items={agendaItems} now={now} />
+        <div className="flex-1 overflow-y-auto" ref={agendaRef}>
+          <AgendaView items={agendaItems} nowMs={now.getTime()} />
         </div>
       )}
 
