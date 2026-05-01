@@ -42,6 +42,7 @@ export default function ArtistBlock({
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className={isLive ? 'animate-live-border' : ''}
       style={{
         position: 'absolute',
         top,
@@ -54,14 +55,16 @@ export default function ArtistBlock({
           ? `1px solid ${stageColor}`
           : `1px solid var(--border)`,
         boxShadow: isLive
-          ? `0 0 12px ${stageColor}60, inset 0 0 20px ${stageColor}10`
+          ? `0 0 16px ${stageColor}70, inset 0 0 24px ${stageColor}12`
           : hovered
-          ? `0 0 8px ${stageColor}30`
+          ? `0 0 10px ${stageColor}40`
           : 'none',
-        opacity: isPast ? 0.45 : 1,
-        filter: isPast ? 'grayscale(0.6)' : 'none',
-        transition: 'box-shadow 0.2s, opacity 0.3s, filter 0.3s',
+        opacity: isPast ? 0.4 : 1,
+        filter: isPast ? 'grayscale(0.65)' : 'none',
+        transition: 'box-shadow 0.25s, opacity 0.3s, filter 0.3s',
         cursor: 'default',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
       }}
     >
       {/* Background image */}

@@ -22,11 +22,41 @@ body {
   font-family: var(--font-sans);
 }
 
+/* ── Scrollbars ── */
+::-webkit-scrollbar          { width: 4px; height: 4px; }
+::-webkit-scrollbar-track    { background: transparent; }
+::-webkit-scrollbar-thumb    { background: rgba(255,255,255,0.1); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,212,255,0.35); }
+
+/* ── Selection ── */
+::selection {
+  background: rgba(0, 212, 255, 0.25);
+  color: #fff;
+}
+
+/* ── Animations ── */
 @keyframes pulse-glow {
   0%, 100% { opacity: 1; }
-  50%       { opacity: 0.5; }
+  50%       { opacity: 0.45; }
+}
+
+@keyframes live-border {
+  0%, 100% { box-shadow: 0 0 8px rgba(0,212,255,0.4), inset 0 0 12px rgba(0,212,255,0.05); }
+  50%       { box-shadow: 0 0 18px rgba(0,212,255,0.7), inset 0 0 20px rgba(0,212,255,0.10); }
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-live-border {
+  animation: live-border 2s ease-in-out infinite;
+}
+
+/* ── Utility: glass card ── */
+.glass-card {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(26, 26, 36, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }

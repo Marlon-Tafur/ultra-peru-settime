@@ -33,7 +33,7 @@ export default function StageColumn({
     <div className="flex flex-col min-w-0" style={{ flex: 1 }}>
       {/* ── Stage header (sticky) ── */}
       <div
-        className="sticky top-0 flex flex-col items-center justify-center gap-1 shrink-0 border-b border-r"
+        className="sticky top-0 flex flex-col items-center justify-center gap-1 shrink-0 border-b border-r overflow-hidden"
         style={{
           height: STAGE_HEADER_H,
           background: 'var(--bg-secondary)',
@@ -41,12 +41,33 @@ export default function StageColumn({
           zIndex: 20,
         }}
       >
+        {/* Color accent strip at top */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 3,
+            background: stage.color,
+            opacity: 0.85,
+          }}
+        />
+        {/* Subtle color glow behind content */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: `radial-gradient(ellipse at 50% 0%, ${stage.color}12 0%, transparent 70%)`,
+            pointerEvents: 'none',
+          }}
+        />
         <Image
           src={stage.logo}
           alt={stage.name}
           width={80}
           height={20}
-          style={{ objectFit: 'contain', maxHeight: 20 }}
+          style={{ objectFit: 'contain', maxHeight: 20, position: 'relative', zIndex: 1 }}
           unoptimized
         />
         <span
@@ -56,6 +77,8 @@ export default function StageColumn({
             textTransform: 'uppercase',
             letterSpacing: '0.12em',
             color: stage.color,
+            position: 'relative',
+            zIndex: 1,
           }}
         >
           {stage.name}
