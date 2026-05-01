@@ -1,26 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --bg-primary:    #0a0a0f;
+  --bg-secondary:  #111118;
+  --bg-card:       #1a1a24;
+  --cyan:          #00D4FF;
+  --cyan-glow:     0 0 20px rgba(0, 212, 255, 0.4);
+  --orange:        #FF8C00;
+  --orange-glow:   0 0 20px rgba(255, 140, 0, 0.4);
+  --pink:          #FF3366;
+  --purple:        #9B59B6;
+  --text-primary:  #FFFFFF;
+  --text-secondary:#8888AA;
+  --border:        rgba(255, 255, 255, 0.08);
+  --font-sans:     var(--font-inter), Arial, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }
