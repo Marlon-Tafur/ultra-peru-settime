@@ -12,6 +12,11 @@ import {
 import ArtistBlock from './ArtistBlock'
 import TimelineIndicator from './TimelineIndicator'
 
+interface CustomTime {
+  custom_start: string | null
+  custom_end: string | null
+}
+
 interface Props {
   stage: Stage
   artists: Artist[]
@@ -19,6 +24,7 @@ interface Props {
   onToggle: (id: number) => void
   timelineY: number | null
   now: Date
+  customTimes?: Map<number, CustomTime>
 }
 
 export default function StageColumn({
@@ -28,6 +34,7 @@ export default function StageColumn({
   onToggle,
   timelineY,
   now,
+  customTimes,
 }: Props) {
   return (
     <div className="flex flex-col min-w-0" style={{ flex: 1 }}>
@@ -122,6 +129,7 @@ export default function StageColumn({
           const isLive = nowMs >= startMs && nowMs < endMs
           const isPast = nowMs >= endMs
 
+          const ct = customTimes?.get(artist.id)
           return (
             <ArtistBlock
               key={artist.id}
@@ -133,6 +141,8 @@ export default function StageColumn({
               isLive={isLive}
               isPast={isPast}
               onToggle={() => onToggle(artist.id)}
+              customStart={ct?.custom_start}
+              customEnd={ct?.custom_end}
             />
           )
         })}

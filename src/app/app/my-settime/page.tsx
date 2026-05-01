@@ -64,6 +64,7 @@ export default function MySetTimePage() {
   const [conflicts, setConflicts] = useState<ConflictPair[]>([])
   const [openConflict, setOpenConflict] = useState<ConflictPair | null>(null)
   const agendaRef = useRef<HTMLDivElement>(null)
+  const gridRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 60_000)
@@ -131,6 +132,13 @@ export default function MySetTimePage() {
   const timelineY = getTimelineY(now)
   const favSet = new Set(favorites.map((f) => f.artist_id))
 
+  // Map of custom times by artist_id — used to render cut overlays in grilla
+  const customTimesMap = new Map(
+    favorites
+      .filter((f) => f.custom_start || f.custom_end)
+      .map((f) => [f.artist_id, { custom_start: f.custom_start, custom_end: f.custom_end }])
+  )
+
   type AgendaItemData = {
     artist: (typeof ARTISTS)[number]
     record: FavoriteRecord
@@ -192,7 +200,7 @@ export default function MySetTimePage() {
               {conflicts.length} conflicto{conflicts.length > 1 ? 's' : ''}
             </button>
           )}
-          {!isEmpty && <ShareButton agendaRef={agendaRef} />}
+          {!isEmpty && <ShareButton captureRef={view === 'agenda' ? agendaRef : gridRef} />}
         </div>
       </div>
 
@@ -233,7 +241,7 @@ export default function MySetTimePage() {
             })}
           </div>
 
-          <div className="flex-1 overflow-y-auto overflow-x-auto">
+          <div className="flex-1 overflow-y-auto overflow-x-auto" ref={gridRef}>
             <div style={{ maxWidth: 1400, margin: '0 auto' }}>
               <div className="flex" style={{ minWidth: 'max-content' }}>
                 <div className="sticky left-0 shrink-0" style={{ width: 44, background: 'var(--bg-primary)', zIndex: 15 }}>
@@ -257,6 +265,7 @@ export default function MySetTimePage() {
                       onToggle={() => {}}
                       timelineY={timelineY}
                       now={now}
+                      customTimes={customTimesMap}
                     />
                   ))}
                 </div>
@@ -271,6 +280,7 @@ export default function MySetTimePage() {
                       onToggle={() => {}}
                       timelineY={timelineY}
                       now={now}
+                      customTimes={customTimesMap}
                     />
                   ))}
                 </div>

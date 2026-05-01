@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Artist } from '@/lib/artists-data'
-import { formatTime } from '@/lib/utils'
+import { formatTime, minutesFromEventStart, PX_PER_MIN } from '@/lib/utils'
 
 interface Props {
   artist: Artist
@@ -13,6 +13,8 @@ interface Props {
   isLive: boolean
   isPast: boolean
   onToggle: () => void
+  customStart?: string | null
+  customEnd?: string | null
 }
 
 export default function ArtistBlock({
@@ -24,6 +26,8 @@ export default function ArtistBlock({
   isLive,
   isPast,
   onToggle,
+  customStart,
+  customEnd,
 }: Props) {
   const [hovered, setHovered] = useState(false)
   const [toggling, setToggling] = useState(false)
@@ -37,6 +41,16 @@ export default function ArtistBlock({
 
   const showTime = height >= 44
   const showGenre = height >= 84
+
+  // Cut overlays: dims the part of the set that was trimmed via conflict resolution
+  const startMin = minutesFromEventStart(artist.startTime)
+  const endMin = minutesFromEventStart(artist.endTime)
+  const topCutPx = customStart
+    ? Math.max(0, (minutesFromEventStart(customStart) - startMin) * PX_PER_MIN)
+    : 0
+  const bottomCutPx = customEnd
+    ? Math.max(0, (endMin - minutesFromEventStart(customEnd)) * PX_PER_MIN)
+    : 0
 
   return (
     <div
@@ -89,6 +103,40 @@ export default function ArtistBlock({
             'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.0) 100%)',
         }}
       />
+
+      {/* Top cut overlay — part trimmed from start */}
+      {topCutPx > 0 && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: topCutPx,
+            background: 'rgba(0,0,0,0.68)',
+            borderBottom: '1px dashed rgba(255,255,255,0.18)',
+            zIndex: 2,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
+      {/* Bottom cut overlay — part trimmed from end */}
+      {bottomCutPx > 0 && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: bottomCutPx,
+            background: 'rgba(0,0,0,0.68)',
+            borderTop: '1px dashed rgba(255,255,255,0.18)',
+            zIndex: 2,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
 
       {/* Heart button — top right */}
       <button

@@ -5,17 +5,17 @@ import { toPng } from 'html-to-image'
 import { createClient } from '@/lib/supabase'
 
 interface Props {
-  agendaRef: React.RefObject<HTMLDivElement | null>
+  captureRef: React.RefObject<HTMLDivElement | null>
 }
 
-export default function ShareButton({ agendaRef }: Props) {
+export default function ShareButton({ captureRef }: Props) {
   const [imgUrl, setImgUrl] = useState<string | null>(null)
   const [shareUrl, setShareUrl] = useState<string | null>(null)
   const [generating, setGenerating] = useState(false)
   const [copied, setCopied] = useState(false)
 
   async function handleShare() {
-    if (!agendaRef.current) return
+    if (!captureRef.current) return
     setGenerating(true)
     try {
       const supabase = createClient()
@@ -26,7 +26,7 @@ export default function ShareButton({ agendaRef }: Props) {
       const url = `${window.location.origin}/shared/${user?.id ?? 'unknown'}`
       setShareUrl(url)
 
-      const dataUrl = await toPng(agendaRef.current, {
+      const dataUrl = await toPng(captureRef.current!, {
         backgroundColor: '#0a0a0f',
         quality: 0.95,
         pixelRatio: 2,
