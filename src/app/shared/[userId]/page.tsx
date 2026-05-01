@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from '@/lib/supabase'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { ARTISTS, STAGES, getArtistsByStage, getStageColor } from '@/lib/artists-data'
 import AgendaView from '@/components/AgendaView'
 import { FavoriteRecord } from '@/components/ConflictModal'
