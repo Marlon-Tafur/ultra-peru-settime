@@ -21,11 +21,29 @@ export default function LoginPage() {
 
     try {
       if (mode === 'register') {
-        const { error } = await supabase.auth.signUp({ email, password })
-        if (error) throw error
+        const { data, error } = await supabase.auth.signUp({ email, password })
+        if (error) {
+          if (error.message.includes('already registered') || error.message.includes('already been registered')) {
+            throw new Error('Este email ya tiene una cuenta. Usá "Ingresar" en su lugar.')
+          }
+          throw error
+        }
+        if (!data.session) {
+          setError('Revisá tu email para confirmar tu cuenta antes de ingresar. Si no querés confirmación, desactivá "Confirm email" en el dashboard de Supabase.')
+          setLoading(false)
+          return
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
-        if (error) throw error
+        if (error) {
+          if (error.message.includes('Invalid login credentials') || error.message.includes('invalid_credentials')) {
+            throw new Error('Email o contraseña incorrectos. Verificá tus datos.')
+          }
+          if (error.message.includes('Email not confirmed')) {
+            throw new Error('Debés confirmar tu email antes de ingresar. Revisá tu bandeja de entrada.')
+          }
+          throw error
+        }
       }
       router.push('/app/settime')
       router.refresh()
